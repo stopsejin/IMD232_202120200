@@ -6,35 +6,32 @@ let radius = 50;
 function setup() {
   setCanvasContainer('p5-canvas', 3, 2, true);
   background('white');
-  pos = createVector(random(width), random(height));
+  pos = createVector(random(width / 2), random(height / 2));
   vel = createVector(0, 0);
   acc = p5.Vector.random2D();
-  acc.mult(0.1);
+  acc.mult(0.001);
 }
 
 function draw() {
   background('white');
   update();
   checkEdges();
+  mouse = createVector(mouseX, mouseY);
+  vis = p5.Vector.sub(mouse, pos);
+  stroke('black');
+  strokeWeight(2);
+  line(pos.x, pos.y, mouse.x, mouse.y);
   display();
-
-  let mouse = createVector(mouseX, mouseY);
-  let center = createVector(ellipse(radius));
-  strokeWeight(4);
-  stroke(200);
-  line(pos.x, pos.y, mouse.x, mouse.y);
-  mouse.sub(center);
-  stroke(0);
-  translate(radius / 2, radius / 2);
-  line(pos.x, pos.y, mouse.x, mouse.y);
-  line(pos.x, pos.y, random(width), random(height));
+  displayAcc();
+  displayVel();
 }
 
 function update() {
   acc = p5.Vector.random2D();
-  acc.mult(0.5);
+
+  acc.mult(0.1);
   vel.add(acc);
-  vel.limit(2);
+  vel.limit();
   pos.add(vel);
 }
 
@@ -54,5 +51,15 @@ function checkEdges() {
 function display() {
   noStroke();
   fill('black');
-  ellipse(pos.x, pos.y, radius);
+  ellipse(pos.x, pos.y, 50);
+}
+
+function displayAcc() {
+  stroke('red');
+  line(pos.x, pos.y, pos.x + acc.x * 800, pos.y + acc.y * 800);
+}
+
+function displayVel() {
+  stroke('blue');
+  line(pos.x, pos.y, pos.x + vel.x * 80, pos.y + vel.y * 80);
 }
